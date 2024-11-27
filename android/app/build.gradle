@@ -73,6 +73,7 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
+    compileSdkVersion 33 
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
@@ -106,6 +107,7 @@ android {
         }
     }
 }
+
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
