@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 18,
     margin: 16,
-    // alignItems: 'center',
     padding: 10,
+    width: '50%',
   },
   image: {
     width: 80,

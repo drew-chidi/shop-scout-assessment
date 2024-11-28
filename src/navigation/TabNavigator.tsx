@@ -39,7 +39,11 @@ const TabNavigator: React.FC = () => {
         tabBarInactiveTintColor: '#0000009E',
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{headerShown: false}}
+      />
       <Tab.Screen name="Trend" component={TrendScreen} />
       <Tab.Screen name="Order" component={OrderScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />

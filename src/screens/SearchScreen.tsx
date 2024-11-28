@@ -8,11 +8,13 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import CategoryCard from '../components/CategoryCard';
 import ProductCard from '../components/ProductCard';
 import useFetchCategories from '../hooks/useFetchCategories';
 import useFetchProducts from '../hooks/useFetchProducts';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const categoryImages: {[key: string]: string} = {
   electronics: require('../assets/images/category-1.png'),
@@ -104,10 +106,8 @@ const SearchScreen: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
         <View style={styles.searchBarContainer}>
-          <Image
-            source={require('../assets/svgs/search-icon.svg')}
-            style={styles.searchIcon}
-          />
+          <Ionicons name="search" size={28} color="#FF882E" />
+
           <TextInput
             style={styles.searchInput}
             placeholder="Search..."
@@ -123,7 +123,9 @@ const SearchScreen: React.FC = () => {
       <View style={styles.historySectionContainer}>
         <View style={styles.sectionHeading}>
           <Text style={styles.sectionTitle}>Search History</Text>
-          <TouchableOpacity onPress={clearSearchHistory}>
+          <TouchableOpacity
+            onPress={clearSearchHistory}
+            style={styles.clearWrapper}>
             <Text style={styles.clearSearch}>Clear </Text>
           </TouchableOpacity>{' '}
         </View>
@@ -137,7 +139,8 @@ const SearchScreen: React.FC = () => {
       </View>
       <View style={styles.categoryContainer}>
         <FlatList
-          data={categories}
+          data={filteredCategories}
+          // data={categories}
           renderItem={renderCategory}
           keyExtractor={item => item}
           numColumns={2}
@@ -147,7 +150,7 @@ const SearchScreen: React.FC = () => {
         />
       </View>
       <FlatList
-        data={products}
+        data={filteredProducts}
         renderItem={renderProduct}
         keyExtractor={item => item.id.toString()}
         numColumns={2}
@@ -161,6 +164,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    paddingTop: 40,
     backgroundColor: '#f8f9fa',
     maxWidth: 600,
   },
@@ -173,13 +177,13 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#FCFCFD',
     padding: 10,
     borderRadius: 8,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: '#EFEFEF',
-    gap: 8,
+    gap: 10,
     width: '80%',
   },
   searchIcon: {
@@ -187,8 +191,9 @@ const styles = StyleSheet.create({
     height: 20,
   },
   searchInput: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FCFCFD',
     fontSize: 16,
+    color: '#FF882E',
   },
   filterIcon: {
     width: 20,
@@ -197,7 +202,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    width: '85%',
   },
   historySectionContainer: {
     marginVertical: 40,
@@ -205,7 +210,12 @@ const styles = StyleSheet.create({
   sectionHeading: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
+  clearWrapper: {
+    width: '15%',
+  },
+
   clearSearch: {
     fontSize: 12,
     fontWeight: 'medium',
