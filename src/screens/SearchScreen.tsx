@@ -1,9 +1,18 @@
-import React from 'react';
-import {View, Text, TextInput, FlatList, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import CategoryCard from '../components/CategoryCard';
 import ProductCard from '../components/ProductCard';
 import useFetchCategories from '../hooks/useFetchCategories';
 import useFetchProducts from '../hooks/useFetchProducts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const categoryImages: {[key: string]: string} = {
   electronics: require('../assets/images/category-1.png'),
@@ -23,17 +32,43 @@ const SearchScreen: React.FC = () => {
   const {data: categories = [], isLoading: categoriesLoading} =
     useFetchCategories();
   const {data: products = [], isLoading: productsLoading} = useFetchProducts();
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    const loadSearchHistory = async () => {
+      const history = await AsyncStorage.getItem('searchHistory');
+      if (history) {
+        setSearchHistory(JSON.parse(history));
+      }
+    };
+    loadSearchHistory();
+  }, []);
+
+  const handleSearch = async (term: string) => {
+    setSearchTerm(term);
+    // Add search term to history and persist it
+    const newHistory = [term, ...searchHistory.filter(item => item !== term)];
+    setSearchHistory(newHistory);
+    await AsyncStorage.setItem('searchHistory', JSON.stringify(newHistory));
+  };
 
   const renderProduct = ({
     item,
   }: {
-    item: {id: number; title: string; price: number; image: string};
+    item: {
+      id: number;
+      title: string;
+      price: number;
+      image: string;
+      description: string;
+    };
   }) => (
     <ProductCard
       title={item.title}
       price={item.price}
       imageUrl={item.image}
-      description={item.title}
+      description={item.description}
     />
   );
 
@@ -50,11 +85,54 @@ const SearchScreen: React.FC = () => {
     />
   );
 
+  const filteredCategories = categories.filter(category =>
+    category.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const filteredProducts = products.filter(product =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const clearSearchHistory = async () => {
+    await AsyncStorage.removeItem('searchHistory');
+    setSearchHistory([]);
+  };
+
+  console.log({filteredCategories, filteredProducts, products});
+
   return (
     <View style={styles.container}>
-      <View>
-        <View>
-          <TextInput style={styles.searchInput} placeholder="Search..." />
+      <View style={styles.headerWrapper}>
+        <View style={styles.searchBarContainer}>
+          <Image
+            source={require('../assets/svgs/search-icon.svg')}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search..."
+            value={searchTerm}
+            onChangeText={handleSearch}
+          />
+        </View>
+        <Image
+          source={require('../assets/svgs/filter-icon.svg')}
+          style={styles.filterIcon}
+        />
+      </View>
+      <View style={styles.historySectionContainer}>
+        <View style={styles.sectionHeading}>
+          <Text style={styles.sectionTitle}>Search History</Text>
+          <TouchableOpacity onPress={clearSearchHistory}>
+            <Text style={styles.clearSearch}>Clear </Text>
+          </TouchableOpacity>{' '}
+        </View>
+        <View style={styles.searchList}>
+          {searchHistory.map((item, index) => (
+            <Text key={index} style={styles.historyItem}>
+              {item}
+            </Text>
+          ))}
         </View>
       </View>
       <View style={styles.categoryContainer}>
@@ -63,9 +141,9 @@ const SearchScreen: React.FC = () => {
           renderItem={renderCategory}
           keyExtractor={item => item}
           numColumns={2}
-          initialNumToRender={4} // 2 cards per row
+          initialNumToRender={4}
           columnWrapperStyle={styles.row}
-          scrollEnabled={false} // Disable scrolling for 4 items
+          scrollEnabled={false}
         />
       </View>
       <FlatList
@@ -84,28 +162,72 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#f8f9fa',
-    alignSelf: 'center',
     maxWidth: 600,
   },
-  searchInput: {
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    justifyContent: 'space-between',
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#fff',
     padding: 10,
     borderRadius: 8,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#EFEFEF',
+    gap: 8,
+    width: '80%',
+  },
+  searchIcon: {
+    width: 20,
+    height: 20,
+  },
+  searchInput: {
+    backgroundColor: '#fff',
     fontSize: 16,
+  },
+  filterIcon: {
+    width: 20,
+    height: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  row: {
-    justifyContent: 'center',
-    // marginBottom: 16,
+  historySectionContainer: {
+    marginVertical: 40,
   },
-  categoryContainer: {
+  sectionHeading: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  clearSearch: {
+    fontSize: 12,
+    fontWeight: 'medium',
+    color: '#FF882E',
+  },
+  searchList: {
+    marginTop: 10,
+    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 15,
+  },
+  historyItem: {
+    fontSize: 10,
+    fontWeight: 500,
+  },
+  row: {
+    justifyContent: 'center',
+  },
+  categoryContainer: {
+    marginBottom: 16,
+    marginTop: 10,
   },
 });
 

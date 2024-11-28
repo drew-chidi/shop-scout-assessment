@@ -17,8 +17,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <View style={styles.card}>
       <Image source={{uri: imageUrl}} style={styles.image} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
+      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+        {title}
+      </Text>
+      <Text style={styles.description} numberOfLines={1} ellipsizeMode="tail">
+        {description}
+      </Text>
       <Text style={styles.price}>#{price.toFixed(2)}</Text>
     </View>
   );

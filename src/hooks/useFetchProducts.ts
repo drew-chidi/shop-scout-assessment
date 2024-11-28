@@ -6,6 +6,7 @@ type Product = {
   title: string;
   price: number;
   image: string;
+  description: string;
 };
 
 const fetchProducts = async (): Promise<Product[]> => {

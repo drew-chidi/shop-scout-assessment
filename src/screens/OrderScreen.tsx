@@ -1,31 +1,10 @@
 import React from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
-import CategoryCard from '../components/CategoryCard';
-// import useFetchCategories from '../hooks/useFertchCategories';
+import {View, Text, StyleSheet} from 'react-native';
 
 const OrderScreen: React.FC = () => {
-  //   const {data: categories} = useFetchCategories();
-
-  const categories: string[] = [];
-
-  const renderCategory = ({item}: {item: string}) => (
-    <CategoryCard
-      title={item}
-      imageUrl="https://via.placeholder.com/60"
-      onPress={() => console.log(`Selected ${item}`)}
-    />
-  );
-
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Categories</Text>
-      <FlatList
-        data={categories}
-        horizontal
-        renderItem={renderCategory}
-        keyExtractor={item => item}
-        contentContainerStyle={styles.list}
-      />
+      <Text style={styles.sectionTitle}>OrderSCreen</Text>
     </View>
   );
 };
