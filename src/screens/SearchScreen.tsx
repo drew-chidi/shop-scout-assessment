@@ -74,10 +74,6 @@ const SearchScreen: React.FC = () => {
     />
   );
 
-  if (categoriesLoading || productsLoading) {
-    return <Text>Loading...</Text>;
-  }
-
   const renderCategory = ({item}: {item: string}) => (
     <CategoryCard
       title={item}
@@ -100,14 +96,19 @@ const SearchScreen: React.FC = () => {
     setSearchHistory([]);
   };
 
-  console.log({filteredCategories, filteredProducts, products});
+  if (categoriesLoading || productsLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
         <View style={styles.searchBarContainer}>
           <Ionicons name="search" size={28} color="#FF882E" />
-
           <TextInput
             style={styles.searchInput}
             placeholder="Search..."
@@ -161,6 +162,17 @@ const SearchScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   container: {
     flex: 1,
     padding: 16,
