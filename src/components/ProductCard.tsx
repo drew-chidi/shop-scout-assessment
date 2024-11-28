@@ -30,12 +30,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#fff',
     borderRadius: 18,
     margin: 16,
     padding: 10,
-    width: '50%',
+    width: '45%',
   },
   image: {
     width: 80,

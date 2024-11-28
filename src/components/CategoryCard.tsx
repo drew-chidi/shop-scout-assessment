@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     elevation: 3,
-    width: '48%',
-    flex: 1,
+    width: '45%',
+    // flex: 1,
   },
   image: {
     // width: 93.13,

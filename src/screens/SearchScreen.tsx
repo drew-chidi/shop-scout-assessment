@@ -105,59 +105,114 @@ const SearchScreen: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerWrapper}>
-        <View style={styles.searchBarContainer}>
-          <Ionicons name="search" size={28} color="#FF882E" />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search..."
-            value={searchTerm}
-            onChangeText={handleSearch}
+    <FlatList
+      data={filteredProducts}
+      renderItem={renderProduct}
+      keyExtractor={item => item.id.toString()}
+      numColumns={2}
+      columnWrapperStyle={styles.row}
+      contentContainerStyle={styles.container}
+      ListHeaderComponent={
+        <>
+          <View style={styles.headerWrapper}>
+            <View style={styles.searchBarContainer}>
+              <Ionicons name="search" size={28} color="#FF882E" />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search..."
+                value={searchTerm}
+                onChangeText={handleSearch}
+              />
+            </View>
+            <Image
+              source={require('../assets/images/filter.png')}
+              style={styles.filterIcon}
+            />
+          </View>
+          <View style={styles.historySectionContainer}>
+            <View style={styles.sectionHeading}>
+              <Text style={styles.sectionTitle}>Search History</Text>
+              <TouchableOpacity
+                onPress={clearSearchHistory}
+                style={styles.clearWrapper}>
+                <Text style={styles.clearSearch}>Clear </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.searchList}>
+              {searchHistory.map((item, index) => (
+                <Text key={index} style={styles.historyItem}>
+                  {item}
+                </Text>
+              ))}
+            </View>
+          </View>
+          <FlatList
+            data={filteredCategories}
+            renderItem={renderCategory}
+            keyExtractor={item => item}
+            numColumns={2}
+            columnWrapperStyle={styles.row}
+            scrollEnabled={false} // Avoid conflict
           />
-        </View>
-        <Image
-          source={require('../assets/svgs/filter-icon.svg')}
-          style={styles.filterIcon}
-        />
-      </View>
-      <View style={styles.historySectionContainer}>
-        <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>Search History</Text>
-          <TouchableOpacity
-            onPress={clearSearchHistory}
-            style={styles.clearWrapper}>
-            <Text style={styles.clearSearch}>Clear </Text>
-          </TouchableOpacity>{' '}
-        </View>
-        <View style={styles.searchList}>
-          {searchHistory.map((item, index) => (
-            <Text key={index} style={styles.historyItem}>
-              {item}
-            </Text>
-          ))}
-        </View>
-      </View>
-      <View style={styles.categoryContainer}>
-        <FlatList
-          data={filteredCategories}
-          // data={categories}
-          renderItem={renderCategory}
-          keyExtractor={item => item}
-          numColumns={2}
-          initialNumToRender={4}
-          columnWrapperStyle={styles.row}
-          scrollEnabled={false}
-        />
-      </View>
-      <FlatList
-        data={filteredProducts}
-        renderItem={renderProduct}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-      />
-    </View>
+        </>
+      }
+    />
+
+    // <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+    //   <View style={styles.container}>
+    //     <View style={styles.headerWrapper}>
+    //       <View style={styles.searchBarContainer}>
+    //         <Ionicons name="search" size={28} color="#FF882E" />
+    //         <TextInput
+    //           style={styles.searchInput}
+    //           placeholder="Search..."
+    //           value={searchTerm}
+    //           onChangeText={handleSearch}
+    //         />
+    //       </View>
+    //       <Image
+    //         source={require('../assets/images/filter.png')}
+    //         style={styles.filterIcon}
+    //       />
+    //     </View>
+    //     <View style={styles.historySectionContainer}>
+    //       <View style={styles.sectionHeading}>
+    //         <Text style={styles.sectionTitle}>Search History</Text>
+    //         <TouchableOpacity
+    //           onPress={clearSearchHistory}
+    //           style={styles.clearWrapper}>
+    //           <Text style={styles.clearSearch}>Clear </Text>
+    //         </TouchableOpacity>{' '}
+    //       </View>
+    //       <View style={styles.searchList}>
+    //         {searchHistory.map((item, index) => (
+    //           <Text key={index} style={styles.historyItem}>
+    //             {item}
+    //           </Text>
+    //         ))}
+    //       </View>
+    //     </View>
+    //     <View style={styles.categoryContainer}>
+    //       <FlatList
+    //         data={filteredCategories}
+    //         // data={categories}
+    //         renderItem={renderCategory}
+    //         keyExtractor={item => item}
+    //         numColumns={2}
+    //         initialNumToRender={4}
+    //         columnWrapperStyle={styles.row}
+    //         scrollEnabled={false}
+    //       />
+    //     </View>
+    //     <FlatList
+    //       data={filteredProducts}
+    //       renderItem={renderProduct}
+    //       keyExtractor={item => item.id.toString()}
+    //       numColumns={2}
+    //       columnWrapperStyle={styles.row}
+    //     />
+    //   </View>
+    // </ScrollView>
   );
 };
 
@@ -174,17 +229,18 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   container: {
-    flex: 1,
+    // flex: 1,
     padding: 16,
     paddingTop: 40,
     backgroundColor: '#f8f9fa',
-    maxWidth: 600,
+    // maxWidth: 600,
   },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     justifyContent: 'space-between',
+    alignContent: 'center',
   },
   searchBarContainer: {
     flexDirection: 'row',
